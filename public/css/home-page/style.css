@@ -1,0 +1,86 @@
+/* body{
+	margin: 0px;
+	height: 1000px;
+}
+
+header{
+height: 472px;
+display: block;
+position: relative;
+}
+
+nav{
+	display: flex;
+	justify-content: space-between;
+	margin: 20px;margin-top: 0px;
+	    padding: 10px;
+    padding-bottom: 0px;
+}
+
+ul{
+	display: flex;
+	list-style: none;
+}
+li{
+	padding: 10px;
+}
+
+nav ul li a {
+	text-decoration: none;
+}
+
+.center{
+	text-align: center;
+}
+
+.a_button{
+	text-decoration: none;
+	color: #fdfaff;
+	background-color: #f2ac32;
+	padding: 10px;
+	font-weight: bold;
+	/*text-align: center;
+}
+*/
+
+/* .bg{float: left;
+	height: 100%;width: 100%;
+	position: absolute;
+	width: 100%;
+	background-repeat: no-repeat;
+	background-position:  center;
+	background-size: cover;
+	background-image: url("../images/headerBackground.jpg");
+	z-index: -5;
+}
+
+nav{
+
+}
+nav h3{
+
+} */
+
+/* .a_nav , .icon{
+	font-size: 16px;
+	color: white;
+	cursor: pointer;
+}
+
+.a_button:hover{
+	color: lightblue;
+	transition: 0.4s;
+	transition-timing-function: ease-in-out;
+}
+.logo{
+	font-family: cursive;
+} */
+/* a:hover span i {color:rgb(255, 0, 0);} */
+.unlike{color:rgb(87 107 149);}
+.like{color:blue;}
+.unlike:hover {color: blue;}
+/* .like:hover {color: rgb(87 107 149);} */
+.home-icon{color:rgb(87 107 149);;}
+.home-icon:hover{color:blue;}
+.comment-icon{color:rgb(87 107 149);}
+.comment-icon:hover{color:blue;}
