@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,16 +29,9 @@ class PostController extends Controller
     public function create()
     {
         $userId = Auth::id();
-        //$posts = DB::table('posts')->inRandomOrder()->get();
-        //$posts = Post::all();
-        //$posts = Post::with('user:id,name')->inRandomOrder()->get();//good
         $posts = Post::with('user:id,name')->withCount('comments')->withCount('reactions')->inRandomOrder()->get();
-        //$posts = Post::withCount('comments')->get();
-        //$posts = Post::getTotalLikesAttribute();
-        //dd($posts);
         if(!is_null($posts)){
         return view('user.home')->with(['posts' => $posts])->with(['userId'=>$userId]);
-        dd($posts);
         }
         else
         {dd('there is no posts yet.');}
@@ -51,15 +45,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        //validate
         $userId = Auth::id();
-        DB::table('posts')->insert([
-            'user_id'   => $userId,
-            'title' => $request->postTitle,
-            'content' => $request->postContent,
-            'picture' => $request->postPicture,
-            'created_at'  => now(),
-            'updated_at'  => now()
-        ]);
+        $post = new Post();
+        $post->user_id = $userId;
+        $post->title = $request->postTitle;
+        $post->content = $request->postContent;
+        $post->picture = $request->postPicture;
+        $post->created_at = now();
+        $post->updated_at = now();
+        $post->save();
         return redirect('createPostPage')->with('status', 'Post Data Has Been inserted');
     }
 
