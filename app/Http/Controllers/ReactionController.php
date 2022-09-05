@@ -19,18 +19,61 @@ class ReactionController extends Controller
         //
     }
 
-    public function likePost(Request $request)
+    public function toggle2() {
+        $msg = "This is a simple message.";
+        return response()->json(array('msg'=> $msg), 200);
+     }
+
+    public function toggle()
     {
-        $userID = Auth::id();
-        DB::table('reactions')->insert([
-            'user_id'   => $userID,
-            'post_id' => $request->postId,
-            'created_at'  => now(),
-            'updated_at'  => now()
-        ]);
+        //
+        //dd('sssssssssssssssssssdasdasdasd');
+        $post_id = 9;
+        $userId = Auth::id();
+        $reaction = new Reaction();
+        $reaction->user_id = $userId;
+        $reaction->post_id = $post_id;
+        $reaction->created_at = now();
+        $reaction->updated_at = now();
+        $reaction->save();
+        // //dd('toggle');
+        return response()->json(array('msg'=> 'good'), 200);
+        //return redirect('posts')->with('status', 'Like Has Been inserted');
+        //return back();
+        // resend the count of likes
+        // store/delete like in reaction
+        // $data = ['user_id' => $request->user()->id, 'product_id' => $productId];
+        // $favorite = $this->favorite->findData($data);
+        // if(!empty($favorite))
+        // // use Kouja\ProjectAssistant\Helpers\ResponseHelper;
+        // // public function __construct(Product $product, Favorite $favorite)
+        // // {
+        // //     $this->product = $product;
+        // //     $this->favorite = $favorite;
+        // // }
+        // // return ResponseHelper::delete($this->favorite->forceDeleteData($data));
+        // // return ResponseHelper::insert($this->favorite->createData($data));
+    }
+
+    public function likePost(Request $request, $post_id)
+    {
+        $userId = Auth::id();
+        // DB::table('reactions')->insert([
+        //     'user_id'   => $userId,
+        //     'post_id' => $request->postId,
+        //     'created_at'  => now(),
+        //     'updated_at'  => now()
+        // ]);
+        $reaction = new Reaction();
+        $reaction->user_id = $userId;
+        $reaction->post_id = $post_id;
+        $reaction->created_at = now();
+        $reaction->updated_at = now();
+        $reaction->save();
+        return redirect('createPostPage')->with('status', 'Post Data Has Been inserted');
 
         //return redirect('posts')->with('status', 'Like the post done successfully');
-        return redirect()->back()->with('status', 'Like the post done successfully');
+        //return redirect()->back()->with('status', 'Like the post done successfully');
     }
 
     public function unlikePost(Request $request)

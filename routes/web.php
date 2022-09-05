@@ -35,11 +35,18 @@ Route::get('/createPostPage', function () {
     return view('user.createPost');
 })->middleware(['auth'])->name('createPostPage');
 
-Route::get('/likePost/{postId?}', [ReactionController::class, 'likePost'])->name('likePost');
-Route::get('/unlikePost/{postId?}', [ReactionController::class, 'unlikePost'])->name('unlikePost');
+// Route::get('/likePost/{postId?}', [ReactionController::class, 'likePost'])->name('likePost');
+// Route::get('/unlikePost/{postId?}', [ReactionController::class, 'unlikePost'])->name('unlikePost');
 
-Route::get('/posts/{postId}/comments', [CommentController::class, 'create'])->name('comments');
+// Route::get('/posts/{postId}/comments', [CommentController::class, 'create'])->name('comments');
 
-Route::get('ajax-request', [ReactionController::class, 'create']);
-Route::post('ajax-request', [ReactionController::class, 'likePost']);
+// Route::get('ajax-request', [ReactionController::class, 'create']);
+// Route::post('ajax-request', [ReactionController::class, 'likePost']);
 //Route::post('ajax-request', [AjaxController::class, 'store']);
+
+Route::post('/posts/{id}', [PostController::class, 'toggle'])->name('posts.toggle');
+
+// Route::get('ajax',function() {
+//     return view('message');
+//  });
+//  Route::post('/getmsg', [ReactionController::class, 'toggle2'])->name('likePost');

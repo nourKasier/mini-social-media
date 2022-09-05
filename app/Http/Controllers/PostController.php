@@ -21,6 +21,29 @@ class PostController extends Controller
         //
     }
 
+    //public function toggle(Request $request, $post_id)
+    public function toggle(Request $request, $post_id)
+    {
+        $userId = Auth::id();
+        $get_record = Reaction::where('user_id', $userId)
+        ->where('post_id', $post_id)
+        ->first();
+        if($get_record === null){
+        $reaction = new Reaction();
+        $reaction->user_id = $userId;
+        $reaction->post_id = $post_id;
+        $reaction->created_at = now();
+        $reaction->updated_at = now();
+        $reaction->save();
+        return response()->json(['success' => 'Post liked successfully.']);
+        }else{
+            Reaction::where('user_id', $userId)
+            ->where('post_id', $post_id)
+            ->delete();
+            return response()->json(['success' => 'Post unliked successfully.']);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -1,7 +1,5 @@
 @extends('user.layouts.navbar')
 
-<script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
 @section('content')
 
 @foreach ($posts as $post)
@@ -23,8 +21,8 @@
 <p class="text-justify" style="margin: 1% 1% 0 1%;"><strong>{{$post->title}}</strong></p>
 <p class="text-justify" style="margin: 1% 1% 1% 1%;">{{$post->content}}</p>
 <img src="images/post.jpg" class="img-fluid " alt="Responsive image" style="height: 320px; width: auto;display:block; margin:auto;">
-<h5 class="d-inline">{{$post->comments_count}} comments</h5>
-<h5 class="d-inline float-right">{{$post->reactions_count}} likes</h5>
+<h5 class="d-inline" id="comments_count">{{$post->comments_count}} comments</h5>
+<h5 class="d-inline float-right" id="reactionsCount_{{$post->id}}">{{$post->reactions_count}} likes</h5>
 <hr style="margin-top: 0rem;
 margin-bottom: 1%;
 border: 0;
@@ -43,28 +41,78 @@ border-top: 2px solid #e1dada;"/>
         <div class='col'>
             <div class='row'>
                 @if($post->isAuthUserLikedPost())
-                <form name="unlikePost" class="mx-auto" id="unlikePost" method="post" action="{{route('unlikePost')}}">
-                <a class="col-xs-4 mx-auto link" href="/unlikePost/{{$post->id}}">
-                    <i class="fas fa-thumbs-up fa-lg justify-content-center like" style="font-size: 30px;"></i>
+
+                    <a id="postId_{{$post->id}}" class="col-xs-4 mx-auto link like-link like" href="#">
+                    <i class="fas fa-thumbs-up fa-lg justify-content-center " style="font-size: 30px;"></i>
                 </a>
-                </form>
+
                 @else
-                <form name="likePost" class="mx-auto" id="likePost" method="post" action="{{route('likePost')}}">
-                <a class="col-xs-4 mx-auto link" href="/likePost/{{$post->id}}">
-                    <i class="fas fa-thumbs-up fa-lg justify-content-center unlike" style="font-size: 30px;"></i>
+
+                    <a id="postId_{{$post->id}}" class="col-xs-4 mx-auto link like-link unlike" href="#">
+                    <i class="fas fa-thumbs-up fa-lg justify-content-center " style="font-size: 30px;"></i>
                 </a>
                 {{-- <input name="postId" type="hidden" value={{$post->id}}> --}}
-                </form>
+
                 @endif
             </div>
         </div>
     </div>
 </div>
-<hr style="margin-top: 0rem;
+<hr style="margin-top: 0.5rem;
 margin-bottom: 0rem;
 border: 0;
 border-top: 5px solid #e1dada;"/>
 
+{{-- <input name="postId" type="hidden" data-post-id="{{$post->id}}"> --}}
 @endforeach
+
+<script>
+
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+$(".like-link").click(function(e){
+    let waypoint_id = this.getAttribute('id');
+    let post_id = waypoint_id.split("_").pop();
+
+    e.preventDefault();
+
+    let url = "{{ route('posts.toggle', ':id') }}";
+    url = url.replace(':id', post_id);
+    $.ajax({
+        type:'POST',
+        url: url,
+        success:function(data){
+            if($.isEmptyObject(data.error)){
+                var element = document.getElementById(waypoint_id);
+
+                //for increase/decrease the likes count by one
+                var str = "reactionsCount_" + post_id;
+                var reactionsCountElement = document.getElementById(str);
+                let count = reactionsCountElement.innerHTML.split(" ").shift();
+
+                if (element.classList.contains("unlike")) {
+                    element.classList.remove("unlike");
+                    element.classList.add("like");
+
+                    //increase the likes count by one
+                    var st = parseInt(count)+1 + " likes";
+                }else{
+                    element.classList.remove("like");
+                    element.classList.add("unlike");
+
+                    //decrease the likes count by one
+                    var st = parseInt(count)-1 + " likes";
+                }
+                reactionsCountElement.innerHTML = st;
+            }else{
+                alert("something went wrong please try again.");
+            }
+        }
+    });
+});
+</script>
 
 @endsection
