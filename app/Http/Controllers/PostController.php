@@ -69,6 +69,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
         //validate
+
         $userId = Auth::id();
         $post = new Post();
         $post->user_id = $userId;

@@ -21,7 +21,7 @@
                             <div class="mt-2">
                                 <p class="comment-text">{{$comment->content}}</p>
                                 {{-- <div class="like p-2 cursor" style="margin-top: -20px; font-size:13;"><i class="fa fa-commenting-o"></i><span class="ml-1">Reply</span></div> --}}
-                                <div class="p-2" style="margin-top: -25px; font-size:13;"><a href="/posts/{{request()->route('postId')}}/comments/{{$comment->id}}">Replies</a></div>
+                                <div class="p-2" style="margin-top: -25px; font-size:13;"><a href="#">Reply</a></div>
                             </div>
                         @empty
                         @endforelse
@@ -35,10 +35,10 @@
                 </div> --}}
                 <div class="bg-light p-2">
                     <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
-                        <textarea id="commentContent" class="form-control ml-1 shadow-none textarea" placeholder="Leave a comment..."></textarea>
+                        <textarea id="commentContent" class="form-control ml-1 shadow-none textarea" placeholder="Leave a reply..."></textarea>
                     </div>
                     <div class="mt-2 text-right">
-                        <button class="btn btn-primary btn-sm shadow-none" type="button" id="postComment" name="postComment">Post comment</button>
+                        <button class="btn btn-primary btn-sm shadow-none" type="button" id="postComment" name="postComment">Post reply</button>
                         <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" id="back" name="back" type="button">Back</button>
                     </div>
                 </div>
@@ -80,12 +80,14 @@ $("#postComment").click(function(e){
     let currentUser = '{{Auth::user()->name;}}';
     console.log(currentUser);
     let post_id = {{request()->route('postId')}};
+    let comment_id = {{request()->route('commentId')}};
     let commentContent = document.getElementById('commentContent').value;
     console.log(commentContent);
     e.preventDefault();
 
-    let url = "{{ route('newComment', ':postId') }}";
-    url = url.replace(':postId', post_id);
+    let url = "{{ route('newCommentReply', [':post_id',  ':comment_id']) }}";
+    url = url.replace(':post_id', post_id);
+    url = url.replace(':comment_id', comment_id);
     $.ajax({
         type:'POST',
         data: {

@@ -22,9 +22,18 @@
                     <input type="file" class="form-control-file" id="postPicture" name="postPicture" required>
                 </div>
                 <button type="submit" id="subCreatePost" class="btn btn-primary">Submit</button>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
             </form>
 
-
+            {{-- <input type="text" name="title" value="{{ old('title') }}"> --}}
             {{-- <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>
 
