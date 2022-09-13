@@ -68,14 +68,16 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //validate
-
         $userId = Auth::id();
         $post = new Post();
         $post->user_id = $userId;
         $post->title = $request->postTitle;
         $post->content = $request->postContent;
-        $post->picture = $request->postPicture;
+
+        $imageName = uniqid() . $request->file('postPicture')->getClientOriginalName();
+        $request->file('postPicture')->move(public_path('myPosts/images'), $imageName);
+
+        $post->picture = $imageName;
         $post->created_at = now();
         $post->updated_at = now();
         $post->save();

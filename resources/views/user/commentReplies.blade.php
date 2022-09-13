@@ -21,7 +21,6 @@
                             <div class="mt-2">
                                 <p class="comment-text">{{$comment->content}}</p>
                                 {{-- <div class="like p-2 cursor" style="margin-top: -20px; font-size:13;"><i class="fa fa-commenting-o"></i><span class="ml-1">Reply</span></div> --}}
-                                <div class="p-2" style="margin-top: -25px; font-size:13;"><a href="#">Reply</a></div>
                             </div>
                         @empty
                         @endforelse
@@ -76,13 +75,10 @@ $.ajaxSetup({
     }
 });
 $("#postComment").click(function(e){
-    console.log('enter');
     let currentUser = '{{Auth::user()->name;}}';
-    console.log(currentUser);
     let post_id = {{request()->route('postId')}};
     let comment_id = {{request()->route('commentId')}};
     let commentContent = document.getElementById('commentContent').value;
-    console.log(commentContent);
     e.preventDefault();
 
     let url = "{{ route('newCommentReply', [':post_id',  ':comment_id']) }}";
@@ -96,13 +92,10 @@ $("#postComment").click(function(e){
         },
         url: url,
         success:function(data){
-            console.log('success');
             if($.isEmptyObject(data.error)){
-                console.log('good');
-                var $newdiv1 = $('<div id="commentsContainer" class="bg-white p-2"><div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">' + currentUser + '</span></div></div><div class="mt-2"><p class="comment-text">' + commentContent + '</p></div>');
-                $(commentsContainer).append($newdiv1);
+                var newdiv1 = $('<div class="bg-white p-2"><div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">' + currentUser + '</span></div></div><div class="mt-2"><p class="comment-text">' + commentContent + '</p></div>');
+                $(commentsContainer).append(newdiv1);
                 let commentContentTextArea = document.getElementById('commentContent');
-
                 commentContentTextArea.value = '';
             }else{
                 alert("something went wrong please try again.");

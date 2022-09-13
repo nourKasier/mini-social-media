@@ -76,12 +76,9 @@ $.ajaxSetup({
     }
 });
 $("#postComment").click(function(e){
-    console.log('enter');
     let currentUser = '{{Auth::user()->name;}}';
-    console.log(currentUser);
     let post_id = {{request()->route('postId')}};
     let commentContent = document.getElementById('commentContent').value;
-    console.log(commentContent);
     e.preventDefault();
 
     let url = "{{ route('newComment', ':postId') }}";
@@ -94,13 +91,10 @@ $("#postComment").click(function(e){
         },
         url: url,
         success:function(data){
-            console.log('success');
             if($.isEmptyObject(data.error)){
-                console.log('good');
-                var $newdiv1 = $('<div id="commentsContainer" class="bg-white p-2"><div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">' + currentUser + '</span></div></div><div class="mt-2"><p class="comment-text">' + commentContent + '</p></div>');
-                $(commentsContainer).append($newdiv1);
+                let newdiv1 = $('<div class="bg-white p-2"><div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">' + currentUser + '</span></div></div><div class="mt-2"><p class="comment-text">' + commentContent + '</p></div>');
+                $(commentsContainer).append(newdiv1);
                 let commentContentTextArea = document.getElementById('commentContent');
-
                 commentContentTextArea.value = '';
             }else{
                 alert("something went wrong please try again.");

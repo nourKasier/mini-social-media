@@ -20,7 +20,8 @@
 </ul>
 <p class="text-justify" style="margin: 1% 1% 0 1%;"><strong>{{$post->title}}</strong></p>
 <p class="text-justify" style="margin: 1% 1% 1% 1%;">{{$post->content}}</p>
-<img src="images/post.jpg" class="img-fluid " alt="Responsive image" style="height: 320px; width: auto;display:block; margin:auto;">
+{{-- <img src="images/post.jpg" class="img-fluid " alt="Responsive image" style="height: 320px; width: auto;display:block; margin:auto;"> --}}
+<img src="{{ asset('myPosts/images/' . $post->picture) }}" class="img-fluid " alt="image" style="height: 320px; width: auto; display:block; margin:auto;">
 <h5 class="d-inline" id="commentsCount_{{$post->id}}">{{$post->comments_count}} comments</h5>
 <h5 class="d-inline float-right" id="reactionsCount_{{$post->id}}">{{$post->reactions_count}} likes</h5>
 <hr style="margin-top: 0rem;
