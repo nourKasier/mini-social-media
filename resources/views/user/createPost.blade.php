@@ -11,15 +11,15 @@
                 @csrf
                 <div class="form-group">
                     <label for="title"><strong>Post title:</strong></label>
-                    <input type="text" class="form-control" id="postTitle" name="postTitle" placeholder="Enter post title">
+                    <input type="text" class="form-control" id="post_title" name="post_title" placeholder="Enter post title" value="{{ old('post_title') }}">
                 </div>
                 <div class="form-group">
                     <label for="content"><strong>Post content:</strong></label>
-                    <textarea class="form-control" id="postContent" name="postContent" rows="4" placeholder="Enter post content"></textarea>
+                    <textarea class="form-control" id="post_content" name="post_content" rows="4" placeholder="Enter post content">{{ old('post_content') }}</textarea>
                 </div>
                 <div class="form-group">
                     <label for="picture"><strong>Post picture:</strong></label>
-                    <input type="file" class="form-control-file" id="postPicture" name="postPicture">
+                    <input type="file" class="form-control-file" id="post_picture" name="post_picture">
                 </div>
                 <button type="submit" id="subCreatePost" class="btn btn-primary" style="margin-bottom: 10px;">Submit</button>
 

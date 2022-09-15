@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Stmt\For_;
 
 class PostController extends Controller
 {
@@ -21,23 +19,18 @@ class PostController extends Controller
         //
     }
 
-    //public function toggle(Request $request, $post_id)
     public function toggle(Request $request, $post_id)
     {
-        $userId = Auth::id();
-        $get_record = Reaction::where('user_id', $userId)
-        ->where('post_id', $post_id)
-        ->first();
+        $user_id = $request->user()->id;
+        $get_record = Reaction::where('user_id', $user_id)->where('post_id', $post_id)->first();
         if($get_record === null){
         $reaction = new Reaction();
-        $reaction->user_id = $userId;
+        $reaction->user_id = $user_id;
         $reaction->post_id = $post_id;
-        $reaction->created_at = now();
-        $reaction->updated_at = now();
         $reaction->save();
         return response()->json(['success' => 'Post liked successfully.']);
         }else{
-            Reaction::where('user_id', $userId)
+            Reaction::where('user_id', $user_id)
             ->where('post_id', $post_id)
             ->delete();
             return response()->json(['success' => 'Post unliked successfully.']);
@@ -51,10 +44,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        $userId = Auth::id();
-        $posts = Post::with('user:id,name')->withCount('comments')->withCount('reactions')->inRandomOrder()->get();
+        $posts = Post::withCount('comments')->withCount('reactions')->inRandomOrder()->get();
         if(!is_null($posts)){
-        return view('user.home')->with(['posts' => $posts])->with(['userId'=>$userId]);
+        return view('user.home')->with(['posts' => $posts]);
         }
         else
         {dd('there is no posts yet.');}
@@ -66,22 +58,21 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $userId = Auth::id();
+        // Retrieve the validated input data...
+        // $data = $request->validated();
+        // $categoryData = $this->category->createData($data);
+        $data = $request->validated();
+
+        $user_id = $request->user()->id;
         $post = new Post();
-        $post->user_id = $userId;
-        $post->title = $request->postTitle;
-        $post->content = $request->postContent;
-
-        $imageName = uniqid() . $request->file('postPicture')->getClientOriginalName();
-        $request->file('postPicture')->move(public_path('myPosts/images'), $imageName);
-
-        $post->picture = $imageName;
-        $post->created_at = now();
-        $post->updated_at = now();
+        $post->user_id = $user_id;
+        $post->title = $request->post_title;
+        $post->content = $request->post_content;
+        $post->picture = uniqueNameAndMove($request->file('post_picture'), 'my_posts/images');
         $post->save();
-        return redirect('createPostPage')->with('status', 'Post Data Has Been inserted');
+        return back();
     }
 
     /**
