@@ -43,7 +43,7 @@ class CommentController extends Controller
         $comment->user_id = $userId;
         $comment->post_id = $post_id;
         $comment->reply_to = null;
-        $comment->content =  $request->get('commentContent');
+        $comment->content =  $request->get('comment_content');
         $comment->created_at = now();
         $comment->updated_at = now();
         $comment->save();
@@ -64,7 +64,7 @@ class CommentController extends Controller
         $comment->user_id = $userId;
         $comment->post_id = null;
         $comment->reply_to = $comment_id;
-        $comment->content =  $request->get('commentContent');
+        $comment->content =  $request->get('comment_content');
         $comment->created_at = now();
         $comment->updated_at = now();
         $comment->save();

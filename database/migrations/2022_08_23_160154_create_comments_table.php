@@ -20,9 +20,9 @@ return new class extends Migration
             $table->bigInteger('reply_to')->unsigned()->nullable();
             $table->text('content');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('post_id')->references('id')->on('posts');
-            $table->foreign('reply_to')->references('id')->on('comments');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('reply_to')->references('id')->on('comments')->onDelete('cascade');
 
         });
     }

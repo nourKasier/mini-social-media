@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('content');
             $table->string('picture')->default('defaultPostPicture.jpg');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

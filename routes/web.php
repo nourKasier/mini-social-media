@@ -26,14 +26,15 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('/posts', [PostController::class, 'create']);
+Route::get('/posts', [PostController::class, 'index']);
 
 // Creating a new post
 Route::post('/createPost', [PostController::class, 'store'])->name('createPost');
 // Create post page
-Route::get('/createPostPage', function () {
-    return view('user.createPost');
-})->middleware(['auth'])->name('createPostPage');
+// Route::get('/createPostPage', function () {
+//     return view('user.createPost');
+// })->middleware(['auth'])->name('createPostPage');
+Route::get('/createPostPage', [PostController::class, 'create'])->name('createPostPage');
 
 Route::post('/posts/{id}', [PostController::class, 'toggle'])->name('posts.toggle');
 
@@ -42,3 +43,14 @@ Route::post('/posts/{postId}/comments', [CommentController::class, 'store'])->na
 
 Route::get('/posts/{postId}/comments/{commentId}', [CommentController::class, 'showReplies'])->name('showReplies');
 Route::post('/posts/{postId}/comments/{commentId}', [CommentController::class, 'storeReply'])->name('newCommentReply');
+
+//get /photos/{photo}/edit edit photos.edit
+//DELETE /photos/{photo}  destroy photos.destroy
+//put/patch /photos/{photo} update photos.update
+
+//Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
+//Route::get('/postse/{post}/del', [PostController::class, 'destroy'])->name('posts.destroy');
+//Route::post('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+Route::resource('posts', postController::class);
+//Route::get('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+

@@ -16,7 +16,12 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::withCount('comments')->withCount('reactions')->inRandomOrder()->get();
+        if(!is_null($posts)){
+        return view('user.home')->with(['posts' => $posts]);
+        }
+        else
+        {dd('there is no posts yet.');}
     }
 
     public function toggle(Request $request, $post_id)
@@ -44,12 +49,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        $posts = Post::withCount('comments')->withCount('reactions')->inRandomOrder()->get();
-        if(!is_null($posts)){
-        return view('user.home')->with(['posts' => $posts]);
-        }
-        else
-        {dd('there is no posts yet.');}
+        return view('user.createPost');
     }
 
     /**
@@ -68,13 +68,12 @@ class PostController extends Controller
         $user_id = $request->user()->id;
         $post = new Post();
         $post->user_id = $user_id;
-        $post->title = $request->post_title;
-        $post->content = $request->post_content;
-        $post->picture = uniqueNameAndMove($request->file('post_picture'), 'my_posts/images');
+        $post->title = $data['post_title'];
+        $post->content = $data['post_content'];
+        $post->picture = uniqueNameAndMove($data['post_picture'], 'my_posts/images');
         $post->save();
         return back();
     }
-
     /**
      * Display the specified resource.
      *
@@ -94,7 +93,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        // show the edit form and pass the post
+        return view('user.editPost')->with('post', $post);
     }
 
     /**
@@ -106,7 +106,13 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+            $post->title = $request->edit_post_title;
+            $post->content = $request->edit_post_content;
+            if($request['edit_post_picture'] !== null){
+                $post->picture = uniqueNameAndMove($request['edit_post_picture'], 'my_posts/images');
+            }
+            $post->save();
+            return back();
     }
 
     /**
@@ -117,6 +123,13 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        //dd('deleteeeeeeeeeee');
+        // delete
+        $post->delete();
+
+        // redirect
+        //Session::flash('message', 'Successfully deleted the post!');
+        //return Redirect::to('posts');
+        return back();
     }
 }
