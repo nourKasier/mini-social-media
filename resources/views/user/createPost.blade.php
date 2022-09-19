@@ -22,7 +22,7 @@
                     <input type="file" class="form-control-file" id="post_picture" name="post_picture">
                 </div>
                 <button type="submit" id="subCreatePost" class="btn btn-primary" style="margin-bottom: 10px;">Submit</button>
-
+                <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" id="back" name="back" type="button" onclick="location.href='/posts';" style="width: 76px; height: 38px; margin-top: -8px;">Back</button>
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>

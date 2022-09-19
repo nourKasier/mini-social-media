@@ -18,10 +18,10 @@
                 </div>
                 <div class="form-group">
                     <label for="picture"><strong>Post picture:</strong> (note, leave this field empty -No file chosen- if you do not want to change your post picture).</label>
-                    <input type="file" class="form-control-file" id="edit_post_picture" name="edit_post_picture" value="{{ $post->picture }}">
+                    <input type="file" class="form-control-file" id="edit_post_picture" name="edit_post_picture">
                 </div>
                 <button type="submit" id="subEditPost" class="btn btn-primary" style="margin-bottom: 10px;">Submit</button>
-
+                <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" id="back" name="back" type="button" onclick="location.href='/posts';" style="width: 76px; height: 38px; margin-top: -8px;">Back</button>
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>

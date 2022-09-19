@@ -89,6 +89,7 @@
                 <input type="text" class="col-xs-6 form-control fluid-width col-12 mx-auto" style="background: #3B5998; color:white;" placeholder="Search">
             </form> --}}
             <ul class="col col-xs-4 navbar-nav">
+                <div style="width:100%;"></div>
                 <li class="nav-item" >
                     <a class="nav-link" href="#">
                         <span><i class="fas fa-user fa-lg " style="color:white;"></i></span>

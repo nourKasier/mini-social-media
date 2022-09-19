@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -104,12 +106,18 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-            $post->title = $request->edit_post_title;
-            $post->content = $request->edit_post_content;
-            if($request['edit_post_picture'] !== null){
-                $post->picture = uniqueNameAndMove($request['edit_post_picture'], 'my_posts/images');
+            if (! Gate::allows('update-post', $post)) {
+                abort(403);
+            }
+
+            $data = $request->validated();
+            //dd($data);
+            $post->title = $data['edit_post_title'];
+            $post->content = $data['edit_post_content'];
+            if(array_key_exists("edit_post_picture", $data)){
+                $post->picture = uniqueNameAndMove($data['edit_post_picture'], 'my_posts/images');
             }
             $post->save();
             return back();
@@ -123,7 +131,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //dd('deleteeeeeeeeeee');
+        if (! Gate::allows('delete-post', $post)) {
+            abort(403);
+        }
         // delete
         $post->delete();
 
