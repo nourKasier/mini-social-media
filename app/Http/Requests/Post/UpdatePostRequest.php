@@ -24,9 +24,9 @@ class UpdatePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'edit_post_title' => 'required|max:255',
-            'edit_post_content' => 'required',
-            'edit_post_picture' => 'image',
+            'title' => 'required|max:255',
+            'content' => 'required',
+            'picture' => 'image',
         ];
     }
 }

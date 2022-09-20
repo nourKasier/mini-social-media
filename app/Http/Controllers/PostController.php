@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
+    protected $post;
+
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -65,7 +72,7 @@ class PostController extends Controller
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
         $data['picture'] = uniqueNameAndMove($data['picture'], 'my_posts/images');
-        $postData = Post::create($data);
+        $postData = $this->post->create($data);
         return back();
     }
     /**
@@ -105,13 +112,10 @@ class PostController extends Controller
             }
 
             $data = $request->validated();
-            //dd($data);
-            $post->title = $data['edit_post_title'];
-            $post->content = $data['edit_post_content'];
-            if(array_key_exists("edit_post_picture", $data)){
-                $post->picture = uniqueNameAndMove($data['edit_post_picture'], 'my_posts/images');
+            if(array_key_exists("picture", $data)){
+                $data['picture'] = uniqueNameAndMove($data['picture'], 'my_posts/images');
             }
-            $post->save();
+            $postData = $post->update($data);
             return back();
     }
 
