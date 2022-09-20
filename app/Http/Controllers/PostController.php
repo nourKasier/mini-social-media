@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\Post\StorePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\Models\Post;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
@@ -62,18 +62,10 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        // Retrieve the validated input data...
-        // $data = $request->validated();
-        // $categoryData = $this->category->createData($data);
         $data = $request->validated();
-
-        $user_id = $request->user()->id;
-        $post = new Post();
-        $post->user_id = $user_id;
-        $post->title = $data['post_title'];
-        $post->content = $data['post_content'];
-        $post->picture = uniqueNameAndMove($data['post_picture'], 'my_posts/images');
-        $post->save();
+        $data['user_id'] = $request->user()->id;
+        $data['picture'] = uniqueNameAndMove($data['picture'], 'my_posts/images');
+        $postData = Post::create($data);
         return back();
     }
     /**
