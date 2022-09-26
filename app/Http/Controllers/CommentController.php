@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Comment\StoreCommentRequest;
+use App\Http\Requests\CommentReply\StoreCommentReplyRequest;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+
+    protected $comment;
+
+    public function __construct(Comment $comment)
+    {
+        $this->comment = $comment;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,19 +45,25 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $post_id)
+    public function store(StoreCommentRequest $request, $post_id)
     {
         //store via ajax
-        $userId = Auth::id();
-        $comment = new Comment();
-        $comment->user_id = $userId;
-        $comment->post_id = $post_id;
-        $comment->reply_to = null;
-        $comment->content =  $request->get('comment_content');
-        $comment->created_at = now();
-        $comment->updated_at = now();
-        $comment->save();
-        return response()->json(['success' => 'Comment added successfully.']);
+        // $user_id = $request->user()->id;
+        // $comment = new Comment();
+        // $comment->user_id = $user_id;
+        // $comment->post_id = $post_id;
+        // $comment->reply_to = null;
+        // $comment->content =  $request->get('content');
+        // $comment->save();
+        // return response()->json(['success' => 'Comment added successfully.']);
+
+        //
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
+        $data['post_id'] = $post_id;
+        $commentData = $this->comment->create($data);
+        return back();
+        //return response()->json(['success' => 'Comment added successfully.']);
     }
 
     public function showReplies($post_id, $comment_id)
@@ -56,19 +72,24 @@ class CommentController extends Controller
         return view('user.commentReplies')->with('comments', $comments);
     }
 
-    public function storeReply(Request $request, $post_id,$comment_id)
+    public function storeReply(StoreCommentReplyRequest $request, $post_id, $comment_id)
     {
         //store via ajax
-        $userId = Auth::id();
-        $comment = new Comment();
-        $comment->user_id = $userId;
-        $comment->post_id = null;
-        $comment->reply_to = $comment_id;
-        $comment->content =  $request->get('comment_content');
-        $comment->created_at = now();
-        $comment->updated_at = now();
-        $comment->save();
-        return response()->json(['success' => 'Comment reply added successfully.']);
+        // $user_id = $request->user()->id;
+        // $comment = new Comment();
+        // $comment->user_id = $user_id;
+        // $comment->post_id = null;
+        // $comment->reply_to = $comment_id;
+        // $comment->content =  $request->get('content');
+        // $comment->save();
+        // return response()->json(['success' => 'Comment reply added successfully.']);
+
+        $data = $request->validated();
+        $data['user_id'] = $request->user()->id;
+        $data['reply_to'] = $comment_id;
+        $commentData = $this->comment->create($data);
+        return back();
+
     }
     /**
      * Display the specified resource.

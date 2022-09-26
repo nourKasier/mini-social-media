@@ -34,7 +34,7 @@
                 </div> --}}
                 <div class="bg-light p-2">
                     <div class="d-flex flex-row align-items-start"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
-                        <textarea id="comment_content" class="form-control ml-1 shadow-none textarea" placeholder="Leave a reply..."></textarea>
+                        <textarea id="content" name="content" class="form-control ml-1 shadow-none textarea" placeholder="Leave a reply..."></textarea>
                     </div>
                     <div class="mt-2 text-right">
                         <button class="btn btn-primary btn-sm shadow-none" type="button" id="postComment" name="postComment">Post reply</button>
@@ -42,6 +42,7 @@
                     </div>
                 </div>
             </div>
+            <div id="validation-errors" style="margin-top: 10px;"></div>
         </div>
     </div>
 </div>
@@ -60,7 +61,14 @@ $("#back").click(function(e){
         url: "/posts",
         success:function(data){
             if($.isEmptyObject(data.error)){
-                window.history.back();
+                //window.history.back();
+                //window.location.href = "{{URL::to('posts')}}";
+                //location.replace(document.referrer);
+                //window.location.href = "{{URL::to('comments')}}";
+                let post_id = {{request()->route('postId')}};
+                let url = '{{ route("comments", ":postId") }}';
+                url = url.replace(':postId', post_id);
+                window.location.href = url;
             }else{
                 alert("something went wrong please try again.");
             }
@@ -78,7 +86,7 @@ $("#postComment").click(function(e){
     let current_user = '{{Auth::user()->name;}}';
     let post_id = {{request()->route('postId')}};
     let comment_id = {{request()->route('commentId')}};
-    let comment_content = document.getElementById('comment_content').value;
+    let content = document.getElementById('content').value;
     e.preventDefault();
 
     let url = "{{ route('newCommentReply', [':post_id',  ':comment_id']) }}";
@@ -88,19 +96,26 @@ $("#postComment").click(function(e){
         type:'POST',
         data: {
             _token:'{{ csrf_token() }}',
-            'comment_content' : comment_content,
+            'content' : content,
         },
         url: url,
         success:function(data){
             if($.isEmptyObject(data.error)){
-                var newdiv1 = $('<div class="bg-white p-2"><div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">' + current_user + '</span></div></div><div class="mt-2"><p class="comment-text">' + comment_content + '</p></div>');
+                var newdiv1 = $('<div class="d-flex flex-row user-info"><img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40"><div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">' + current_user + '</span></div></div><div class="mt-2"><p class="comment-text">' + content + '</p>');
                 $(comments_container).append(newdiv1);
-                let comment_content_text_area = document.getElementById('comment_content');
-                comment_content_text_area.value = '';
+                let content_text_area = document.getElementById('content');
+                content_text_area.value = '';
+                location.reload();
             }else{
                 alert("something went wrong please try again.");
             }
-        }
+        },
+        error: function (xhr) {
+            $('#validation-errors').html('');
+            $.each(xhr.responseJSON.errors, function(key,value) {
+                $('#validation-errors').append('<div class="alert alert-danger">'+value+'</div>');
+            });
+        },
     });
 });
 
