@@ -4,6 +4,19 @@
 
 @section('content')
 
+
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
 <div class="container mt-5">
     <div class="d-flex justify-content-center row">
         <div class="col-md-8">

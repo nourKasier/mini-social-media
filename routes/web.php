@@ -1,9 +1,8 @@
 <?php
 
-use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
-use App\Http\Controllers\ReactionController;
+use Application\Comments\Controllers\CommentController;
+use Application\Posts\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,3 +45,4 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::get('/posts', [PostController::class, 'index']);
 
+//Route::get('/try', [CommentController::class, 'index']);

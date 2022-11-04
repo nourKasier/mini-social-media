@@ -4,6 +4,18 @@
 
 @section('content')
 
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
 @foreach ($posts as $post)
 <ul class="navbar-nav flex-row" style="display: inline-block;">
     <li class="nav-item me-3 me-lg-1">
