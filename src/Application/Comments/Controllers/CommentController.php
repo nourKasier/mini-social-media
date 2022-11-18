@@ -1,5 +1,5 @@
 <?php
-//just tes bran
+
 namespace Application\Comments\Controllers;
 
 use App\Http\Controllers\Controller;
