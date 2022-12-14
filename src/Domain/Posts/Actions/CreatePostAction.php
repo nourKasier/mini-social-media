@@ -3,49 +3,33 @@
 namespace Domain\Posts\Actions;
 
 use App\Models\Post;
-use Domain\Posts\DataTransferObjects\PostData;
-use Illuminate\Http\Request;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreatePostAction
 {
-    //public function __invoke(PostData $postData): Post //error idk why.
-    public function __invoke(PostData $postData)
+    use AsAction;
+
+    protected $post;
+
+    public function  __construct(Post $post)
     {
-        // …
+        $this->post = $post;
     }
 
-    public function  __construct()
+    public function handle($postData)
     {
-        // …
+        $success = $this->post->create($postData);
+        return $success ? true : false;
     }
 
-    // public function execute( PostData $postData ): Post
+    // public function execute($request)
     // {
-    //     return new Post([
-    //     'title' => $postData->title,
-    //     'content' => $postData->content,
-    //     'picture' => $postData->picture,
-    //     ]);
+    //     $data = new PostData(...$request->validated());
+    //     $data = (array) $data;
+    //     $data['user_id'] = $request->user()->id;
+    //     $data['picture'] = uniqueNameAndMove($data['picture'], 'my_posts/images');
+    //     $success = $this->post->create($data);
+
+    //     return $success;
     // }
-
-    public function execute($request, $post)
-    {
-        $data = new PostData(...$request->validated());
-        $data = (array) $data;
-        //$data->picture = uniqueNameAndMove($data->picture, 'my_posts/images');
-        //$success = $post->create($data);
-        //return $success;
-        //$data = $request->validated();
-        $data['user_id'] = $request->user()->id;
-        $data['picture'] = uniqueNameAndMove($data['picture'], 'my_posts/images');
-        $success = $post->create($data);
-
-        return $success;
-        // return new Post([
-        // 'title' => $postData->title,
-        // 'content' => $postData->content,
-        // 'picture' => $postData->picture,
-        // ]);
-    }
-
 }

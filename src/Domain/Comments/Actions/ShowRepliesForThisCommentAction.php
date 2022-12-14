@@ -5,18 +5,21 @@ namespace Domain\Comments\Actions;
 use App\Models\Comment;
 use Domain\Comments\DataTransferObjects\CommentData;
 use Domain\Posts\DataTransferObjects\PostData;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class ShowRepliesForThisCommentAction
 {
-    //public function __invoke(PostData $postData): Post //error idk why.
-    public function __invoke(PostData $postData)
-    {
-        // …
-    }
+    use AsAction;
 
     public function  __construct()
     {
         // …
+    }
+
+    public function handle($comment_id)
+    {
+        $replies_of_this_comment = Comment::where('reply_to', $comment_id)->get();
+        return $replies_of_this_comment;
     }
 
     // public function execute( PostData $postData ): Post
@@ -27,11 +30,4 @@ class ShowRepliesForThisCommentAction
     //     'picture' => $postData->picture,
     //     ]);
     // }
-
-    public function execute($comment_id)
-    {
-        $replies_of_this_comment = Comment::where('reply_to', $comment_id)->get();
-        return $replies_of_this_comment;
-    }
-
 }

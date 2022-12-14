@@ -2,21 +2,35 @@
 
 namespace Domain\Comments\Actions;
 
-use Domain\Comments\DataTransferObjects\CommentData;
-use Domain\Posts\DataTransferObjects\PostData;
+use App\Models\Comment;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class StoreReplyForThisCommentAction
 {
-    //public function __invoke(PostData $postData): Post //error idk why.
-    public function __invoke(PostData $postData)
+    use AsAction;
+
+    protected $comment;
+
+    public function  __construct(Comment $comment)
     {
-        // …
+        $this->comment = $comment;
     }
 
-    public function  __construct()
+    public function handle($commentData)
     {
-        // …
+        $success = $this->comment->create($commentData);
+        return $success ? true : false;
     }
+
+    // public function execute($request, $comment_id, $comment)
+    // {
+    //     $data = new CommentData(...$request->validated());
+    //     $data = (array) $data;
+    //     $data['user_id'] = $request->user()->id;
+    //     $data['reply_to'] = $comment_id;
+    //     $success = $comment->create($data);
+    //     return $success;
+    // }
 
     // public function execute( PostData $postData ): Post
     // {
@@ -26,15 +40,4 @@ class StoreReplyForThisCommentAction
     //     'picture' => $postData->picture,
     //     ]);
     // }
-
-    public function execute($request, $comment_id, $comment)
-    {
-        $data = new CommentData(...$request->validated());
-        $data = (array) $data;
-        $data['user_id'] = $request->user()->id;
-        $data['reply_to'] = $comment_id;
-        $success = $comment->create($data);
-        return $success;
-    }
-
 }

@@ -10,16 +10,13 @@ use Domain\Comments\Actions\CreateCommentAction;
 use Domain\Comments\Actions\ShowCommentsForThisPostAction;
 use Domain\Comments\Actions\ShowRepliesForThisCommentAction;
 use Domain\Comments\Actions\StoreReplyForThisCommentAction;
+use Domain\Comments\DataTransferObjects\CommentData;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-
-    protected $comment;
-
-    public function __construct(Comment $comment)
+    public function __construct()
     {
-        $this->comment = $comment;
     }
 
     /**
@@ -39,8 +36,7 @@ class CommentController extends Controller
      */
     public function create($id)
     {
-        $created = new ShowCommentsForThisPostAction();
-        $comments = $created->execute($id);
+        $comments = ShowCommentsForThisPostAction::run($id);
         return view('user.comments')->with('comments', $comments);
     }
 
@@ -52,24 +48,20 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request, $post_id)
     {
-        $stored = new CreateCommentAction();
-        $response = $stored->execute($request, $post_id, $this->comment);
+        $response = CreateCommentAction::run(CommentData::make($request, $post_id));
         return back();
     }
 
     public function showReplies($post_id, $comment_id)
     {
-        $showed = new ShowRepliesForThisCommentAction();
-        $comments = $showed->execute($comment_id);
+        $comments = ShowRepliesForThisCommentAction::run($comment_id);
         return view('user.commentReplies')->with('comments', $comments);
     }
 
-    public function storeReply(StoreCommentReplyRequest $request, $post_id, $comment_id)
+    public function storeReply(StoreCommentReplyRequest $request, $post_id, $reply_to)
     {
-        $stored = new StoreReplyForThisCommentAction();
-        $response = $stored->execute($request, $comment_id, $this->comment);
+        $response = StoreReplyForThisCommentAction::run(CommentData::makeReply($request, $reply_to));
         return back();
-
     }
     /**
      * Display the specified resource.

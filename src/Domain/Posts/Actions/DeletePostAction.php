@@ -2,23 +2,21 @@
 
 namespace Domain\Posts\Actions;
 
-use App\Models\Post;
-use Domain\Posts\DataTransferObjects\PostData;
-use Illuminate\Http\Request;
+use Lorisleiva\Actions\Concerns\AsAction;
 
 class DeletePostAction
 {
-    //public function __invoke(PostData $postData): Post //error idk why.
-    public function __invoke(Post $post)
-    {
-        // …
-        //some processing
-        //$post->delete();
-    }
+    use AsAction;
 
     public function  __construct()
     {
         // …
+    }
+
+    public function handle($post)
+    {
+        $success = $post->delete();
+        return $success ? true : false;
     }
 
     // public function execute( PostData $postData ): Post
@@ -29,10 +27,10 @@ class DeletePostAction
     //     'picture' => $postData->picture,
     //     ]);
     // }
-    public function execute( $post )
-    {
-        //some processing if needed
-        $success = $post->delete();
-        return $success;
-    }
+    // public function execute( $post )
+    // {
+    //     //some processing if needed
+    //     $success = $post->delete();
+    //     return $success;
+    // }
 }

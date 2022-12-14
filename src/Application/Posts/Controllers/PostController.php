@@ -10,17 +10,14 @@ use Domain\Posts\Actions\CreatePostAction;
 use Domain\Posts\Actions\DeletePostAction;
 use Domain\Posts\Actions\ToggleLikeAction;
 use Domain\Posts\Actions\UpdatePostAction;
+use Domain\Posts\DataTransferObjects\PostData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use League\CommonMark\Node\Inline\DelimitedInterface;
 
 class PostController extends Controller
 {
-    protected $post;
-
-    public function __construct(Post $post)
+    public function __construct()
     {
-        $this->post = $post;
     }
 
     /**
@@ -30,18 +27,22 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::withCount('comments')->withCount('reactions')->inRandomOrder()->get();
-        if(!is_null($posts)){
-        return view('user.home')->with(['posts' => $posts]);
+        $posts = Post::withCount('comments')
+            ->withCount('reactions')
+            ->inRandomOrder()
+            ->get();
+        if (!is_null($posts)) {
+            return view('user.home')->with(['posts' => $posts]);
+        } else {
+            echo 'there is no posts yet.';
         }
-        else
-        {dd('there is no posts yet.');}
     }
 
     public function toggle(Request $request, $post_id)
     {
-        $toggled = new ToggleLikeAction();
-        $response = $toggled->execute($request, $post_id);
+        $response = ToggleLikeAction::run($request, $post_id);
+        return $response ? response()->json(['success' => 'Post liked/unliked successfully.']) :
+            response()->json(['success' => 'Post did not liked/unliked successfully.']);
     }
 
     /**
@@ -62,10 +63,12 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $created = new CreatePostAction();
-        $response = $created->execute($request, $this->post);
-        if ($response){return back()->withSuccess('Post created successfully.');}
-        else {return back()->withError('Post was not created successfully, please try again.');}
+        $response = CreatePostAction::run(PostData::make($request));
+        if ($response) {
+            return back()->withSuccess('Post created successfully.');
+        } else {
+            return back()->withError('Post was not created successfully, please try again.');
+        }
     }
     /**
      * Display the specified resource.
@@ -99,14 +102,19 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-            if (! Gate::allows('update-post', $post)) {
-                abort(403);
-            }
-            $updated = new UpdatePostAction();
-            $response = $updated->execute($request, $post);
-            if ($response){return back()->withSuccess('Post updated successfully.');}
-            else {return back()->withError('Post was not updated successfully, please try again.');}
+        if (!Gate::allows('update-post', $post)) {
+            abort(403);
+        }
+        //$updated = new UpdatePostAction();
+        //$response = $updated->execute($request, $post);
+        // $response = UpdatePostAction::run($request, $post);
+        $response = UpdatePostAction::run(PostData::update($request), $post);
 
+        if ($response) {
+            return back()->withSuccess('Post updated successfully.');
+        } else {
+            return back()->withError('Post was not updated successfully, please try again.');
+        }
     }
 
     /**
@@ -117,13 +125,18 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        if (! Gate::allows('delete-post', $post)) {
+        if (!Gate::allows('delete-post', $post)) {
             abort(403);
         }
         // delete
-        $deleted = new DeletePostAction();
-        $response = $deleted->execute($post);
-        if ($response){return redirect('/posts')->withSuccess('Post deleted successfully.');}
-        else {return redirect('/posts')->withError('Post was not deleted successfully, please try again.');}
+        // $deleted = new DeletePostAction();
+        // $response = $deleted->execute($post);
+        $response = DeletePostAction::run($post);
+
+        if ($response) {
+            return redirect('/posts')->withSuccess('Post deleted successfully.');
+        } else {
+            return redirect('/posts')->withError('Post was not deleted successfully, please try again.');
+        }
     }
 }
