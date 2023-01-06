@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Application\Posts\Requests\StorePostRequest;
 use Application\Posts\Requests\UpdatePostRequest;
+use Domain\Posts\Actions\BringPostsInRandomOrderAction;
 use Domain\Posts\Actions\CreatePostAction;
 use Domain\Posts\Actions\DeletePostAction;
 use Domain\Posts\Actions\ToggleLikeAction;
 use Domain\Posts\Actions\UpdatePostAction;
 use Domain\Posts\DataTransferObjects\PostData;
+use Domain\Reactions\DataTransferObjects\ReactionData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -27,10 +29,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::withCount('comments')
-            ->withCount('reactions')
-            ->inRandomOrder()
-            ->get();
+        $posts = BringPostsInRandomOrderAction::run();
         if (!is_null($posts)) {
             return view('user.home')->with(['posts' => $posts]);
         } else {
@@ -40,7 +39,7 @@ class PostController extends Controller
 
     public function toggle(Request $request, $post_id)
     {
-        $response = ToggleLikeAction::run($request, $post_id);
+        $response = ToggleLikeAction::run(ReactionData::make($request, $post_id));
         return $response ? response()->json(['success' => 'Post liked/unliked successfully.']) :
             response()->json(['success' => 'Post did not liked/unliked successfully.']);
     }
