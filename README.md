@@ -2,7 +2,7 @@
 Posts and comments system.
 
 ## Demonstration Video
-The game video available on my YouTube channel, this is the link to the video: https://youtu.be/cgAgFs17tHc?si=hg7PhN31cgL089pB
+The video available on my YouTube channel, this is the link to the video: https://youtu.be/cgAgFs17tHc?si=hg7PhN31cgL089pB
 
 ## About Laravel
 
